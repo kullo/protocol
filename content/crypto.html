@@ -1,0 +1,44 @@
+---
+extends: base.j2
+default_block: main_md
+title: Cryptography in Kullo
+---
+
+## Basic principles
+* Don't roll your own algorithm!
+  We use only established and battle-tested algorithms and follow recommendations from well-respected entities
+  (for example [ENISA](https://www.enisa.europa.eu/activities/identity-and-trust/library/deliverables/algorithms-key-sizes-and-parameters-report)
+  and [ECRYPT, NIST, ANSSI, BSI, ...](http://www.keylength.com/en/compare/)).
+* Don't roll your own implementation!
+  In our own client, we use [OpenSSL](https://en.wikipedia.org/wiki/OpenSSL) for TLS and [Botan](https://en.wikipedia.org/wiki/Botan_%28programming_library%29) for everything else.
+* Keep it simple!
+  For example, we use authenticated encryption ([GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode)) instead of implementing encrypt-then-MAC or MAC-then-encrypt.
+
+## Choice of algorithms
+Whenever we write about symmetric or asymmetric encryption or signatures, we mean the following algorithms, modes and parameters:
+
+* symmetric encryption: AES-256 in GCM mode
+* asymmetric encryption: RSA-4096 with OAEP(SHA-512) padding
+* asymmetric signatures: RSA-4096 with PSS(SHA-512) padding
+
+## Uses of cryptography
+
+### Initialization vectors (IVs)
+When we use symmetric encryption, we generally use a random IV of 128 bits.
+We prepend this IV to the ciphertext, so the first 16 bytes of a symmetric ciphertext must be used as IV for decryption of the following data.
+
+There are two exceptions to this rule:
+The `content` and `attachment` fields of messages use fixed IVs.
+See [Message format](message-format.html) for details.
+This is secure because with GCM, reuse is only a problem if both key and IV are reused.
+
+### Keys
+Read about key hierarchy, generation and protection in Kullo: [Cryptographic keys](crypto_keys.html).
+Private keys and the privateDataKey must be encrypted with the masterKey before being uploaded.
+
+The process of changing keys, for example in the event of key compromise, is described in [Changing keys](crypto_keychange.html).
+However, none of this is finalized or implemented yet.
+
+### Messages
+Read about the encryption of messages in the [Message format reference](message-format.html).
+

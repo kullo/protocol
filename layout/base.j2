@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>{% if resource.meta.title-%}{{ resource.meta.title}} |{%-endif %} Kullo Docs</title>
+        <meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ media_url('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ media_url('css/bootstrap-responsive.min.css') }}">
+        <link rel="stylesheet" href="{{ media_url('css/kullo-protocol.css') }}">
+        <script src="{{ media_url('js/jquery-2.1.1.min.js') }}"></script>
+        <script src="{{ media_url('js/json_highlighter.js') }}"></script>
+        <script>
+        $(document).ready(function() {
+            $("pre code").each(function(index) {
+                if (isValidJsonString($(this).html())) {
+                    $(this).html(
+                        '<span class="json">' + syntaxHighlight($(this).html()) + '</span>'
+                    );
+                }
+            });
+        });
+        </script>
+    </head>
+	<body class="container">
+		<div class="row">
+			<div class="span3">
+				<a href="./" id="mainlogo"><img src="{{ media_url('img/logo_transparent.png') }}" alt="The Open Kullo Protocol" /></a>
+			</div>
+			<header class="span9">
+		        <hgroup>
+		            {% if resource.meta.title-%}<h1>{{resource.meta.title}}</h1>{%-endif %}
+		        </hgroup>
+		    </header>
+	    </div>
+		<div class="row">
+			<nav class="span3" id="mainmenu">
+			{# Move main menu rendering away from the base layout. This
+			   way it can be used to generate the list many times, e.g. in
+			   a footer, etc.
+			#}
+			    {% import "macros.j2" as macros with context %}
+			    {{ macros.render_basic_menu() }}
+			</nav>
+			<article id="content" class="span9">
+			{# Main content block. Notice it has to pass through the
+			   Markdown filter to generate HTML. If a block in content
+			   pages contains only markup, you can omit the filter.
+			#}
+				{% block main %}
+			    {% filter markdown -%}
+			    {% block main_md %}{% endblock %}
+			    {%- endfilter %}
+			    {% endblock %}
+			</article>
+	    </div>
+
+        {# Some parts of the web are not needed for development and can
+           wait for production (e.g. analytics). They can be included in
+           the final production build. Create a new config file, extend
+           the original one and override the "mode" property; then build
+           the site with the new "production configuration".
+        #}
+        {% if site.config.mode == "production" -%}
+        {%- endif %}
+    </body>
+</html>
+

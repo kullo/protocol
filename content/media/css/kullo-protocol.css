@@ -1,0 +1,60 @@
+body {
+	background-color: #F1ECDD;
+	color: #1A171B;
+	padding-top: 30px;
+}
+
+#mainlogo {
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+h1 {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+h2 {
+	margin-top: 30px;
+}
+
+h3 {
+	margin-top: 20px;
+	margin-bottom: 5px;
+}
+
+#mainmenu {
+    margin-top: 10px;
+}
+
+nav ul {
+	list-style: none;
+}
+
+nav li {
+	margin-bottom: 5px;
+}
+
+dd { margin-bottom: 10px; }
+dd > ul,
+dd > ol { margin-left: 15px; }
+
+pre {
+	word-break: initial;
+	word-wrap: initial;
+	overflow: auto;
+}
+
+pre code {
+	white-space: pre;
+}
+
+code {
+	color: #B90B34;
+}
+
+.json .string  { color: #800; }
+.json .number  { color: #080; }
+.json .boolean { color: #080; }
+.json .null    { color: #080; }
+.json .key     { color: black; }

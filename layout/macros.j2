@@ -1,0 +1,12 @@
+{# Generates the main and basic menu from context data in the site's
+   configuration file.
+#}
+{% macro render_basic_menu() -%}
+<ul class="basic">
+{% for menu_item in menu -%}
+    <li><a {% if (menu_item.url == resource.url) %}class="selected" {% endif -%}
+        href="{{ content_url(menu_item.url) }}">{{ menu_item.title }}</a></li>
+{%- endfor %}
+</ul>
+{%- endmacro %}
+

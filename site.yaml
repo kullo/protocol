@@ -1,0 +1,47 @@
+mode: development
+media_root: media
+media_url: ./media
+base_url: ./
+template: hyde.ext.templates.jinja.Jinja2Template
+plugins:
+    - hyde.ext.plugins.meta.MetaPlugin
+    - hyde.ext.plugins.auto_extend.AutoExtendPlugin
+context:
+    data:
+        author:
+            name: The Kullo Team
+            url: "https://www.kullo.net/"
+        layout:
+            name: Hyde Starter Kit
+            url: "https://github.com/merlinrebrovic/hyde-starter-kit"
+        project:
+            name: Hyde
+            url: "http://hyde.github.com"
+            install: "http://hyde.github.com/install.html"
+        menu:
+          - title: Home
+            url: index.html
+          - title: Kullo Addresses
+            url: kullo_address.html
+          - title: Cryptography
+            url: crypto.html
+          - title: Synchronization
+            url: sync.html
+          - title: HTTP API Reference
+            url: http-api.html
+          - title: Message Format
+            url: message-format.html
+# This defines meta data on the whole site.
+meta:
+    # 'nodemeta' will tell Hyde what file to look for inside a folder from
+    # which to apply meta data to all files (resources) inside it. This is
+    # a great way of simply adding or modifying properties of a very large
+    # number of files.
+    nodemeta: meta.yaml
+
+markdown:
+    extensions:
+        - def_list
+        - tables
+        - toc
+

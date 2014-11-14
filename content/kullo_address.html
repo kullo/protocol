@@ -1,0 +1,38 @@
+---
+extends: base.j2
+default_block: main_md
+title: Kullo addresses
+---
+
+A Kullo address looks like this: `jane.doe#example.net`.
+It is composed of the *local part* (`jane.doe`) and the *domain part* (`example.net`), separated by a hash sign (`#`).
+All characters are in lower-case.
+The domain part must contain at least one dot, as only FQDNs are allowed.
+
+## Formal specification
+The grammar in [Backus-Naur Form](https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_Form) (BNF) looks like that:
+
+    <kullo-addr>         ::= <local-part> "#" <domain-part>
+    
+    <local-part>         ::= <alphanum-str> | <alphanum-str> <local-sep> <local-part>
+    <local-sep>          ::= "." | "-" | "_"
+    
+    <domain-part>        ::= <domain-label> "." <tld-label> | <domain-label> "." <domain-part>
+    <domain-label>       ::= <alphanum-str> | <alphanum-str> "-" <domain-label>
+    <tld-label>          ::= <alpha-alphanum-str> | <alpha-alphanum-str> "-" <domain-label>
+    
+    <alphanum-str>       ::= <alphanum> | <alphanum> <alphanum-str>
+    <alpha-alphanum-str> ::= <alpha> | <alpha> <alphanum-str>
+    <alphanum>           ::= <alpha> | "0" | ... | "9"
+    <alpha>              ::= "a" | ... | "z"
+
+For convenience, these regular expressions should match the grammar:
+
+* local part: `[a-z0-9]+([\.\-_][a-z0-9]+)*`
+* domain part: `([a-z0-9]+(-[a-z0-9]+)*\.)+[a-z][a-z0-9]+(-[a-z0-9]+)*`
+
+## Length restrictions
+
+* local part: at most 64 characters
+* domain part: at most 255 characters, and at most 63 characters per label
+

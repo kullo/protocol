@@ -1,0 +1,11 @@
+*~
+*#
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+.DS_Store
+/.hyde_deps
+/deploy

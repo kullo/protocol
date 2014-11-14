@@ -1,0 +1,69 @@
+---
+extends: base.j2
+default_block: main_md
+title: Synchronization Process
+---
+
+[TOC]
+
+## Rationale
+
+We invested a lot of work into making sure that a Kullo client is still usable when it is not connected to the internet.
+Of course, you cannot send or receive messages while offline,
+but you can browse received messages, mark them as done, save attachments to disk and write new message drafts.
+
+All of this must be synced with the server when connectivity returns.
+This comes with some complexity, most importantly in the notion of local and remote (server side) copies of a message.
+In the following, we line out the steps necessary to communicate with a Kullo server.
+
+## Synchronizing messages
+
+### Downloading
+First, [download a list of messages](http-api.html#get-a-list-of-messages) that where modified since last sync:
+
+	GET /v1/jane.doe%23example.net/messages?modifiedAfter=1234567890
+
+The value used for `modifiedAfter` should be the highest `lastModified` value that you received during an earlier download of this list.
+If this is the first synchronization run, set modifiedAfter to 0 or leave it out.
+
+If you'd like to receive not only the message IDs and modification timestamps,
+but also the contents of messages (omitting attachments), set `includeData` to `true`.
+You can also [download a message's contents](http-api.html#get-a-message) at a later time.
+
+If `resultsReturned` is less than `resultsTotal`, simply re-run the query with updated modifiedAfter to download more messages.
+
+### Processing received messages
+Now that you downloaded messages from the server, you need to process them and probably merge local changes.
+
+* If you need the public signature verification key of the sender to verify the message,
+you can [download](http-api.html#get-a-public-key) it from the Kullo server responsible for the sender.
+* Note that messages cannot be fully [deleted](http-api.html#delete-a-message) for synchronization reasons:
+A tombstone record is left in place (with id and lastModified kept intact, and deleted set to true).
+All other fields are cleared during deletion.
+* The merging policy is this:
+    * deletion always wins
+    * `read`, `done`, and other potential fields in `meta`: local wins over remote modification
+
+### Uploading local modifications
+If there are local modifications to the messages, upload them to the server:
+
+* [Modify meta](http-api.html#modify-message-meta)
+* [Delete](http-api.html#delete-a-message)
+
+For such a requests, use the lastModified value that you received when downloading the record.
+Never change this timestamp locally, unless the server returns a new lastModified value for the message's ID.
+
+A modification will fail if the modification timestamp in the request does not match the one known to the server.
+This can happen if there was a concurrent modification of the message from another client.
+In this case, the server will return a HTTP 409 (Conflict) status code.
+Resync the message and try again, now with an updated timestamp.
+
+In case of success, you get the new lastModified value that you should use to update the local message.
+
+
+## Sending messages
+In addition to all recipients, a message must also be [sent](http-api.html#sending-a-message) to the sender, so that it appears in the sender's inbox.
+So, for a message with N recipients, it must be POSTed N+1 times.
+The `content` and `attachments` fields (and the unencrypted contents of the `keySafe` field) can stay the same for all instances of a message.
+The keySafe field, however, must be encrypted with the [latest public encryption key](http-api.html#get-a-public-key) of the current receiver.
+

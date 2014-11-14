@@ -1,0 +1,381 @@
+---
+extends: base.j2
+default_block: main_md
+title: HTTP API Reference
+---
+
+[TOC]
+
+## Common rules
+* All API calls go through HTTPS.
+* API paths are prefixed with the API version, which is currently `v1`.
+
+Example: To get the messages of `jane.doe#example.net`, access `https://kullo.example.net/v1/jane.doe%23example.net/messages`.
+
+
+## Sending a Message
+
+### Authentication
+No authentication required.
+
+### Post a new message to someone's inbox
+Method
+:	POST
+
+Path
+:	/$ADDRESS/messages
+
+Body ([reference](message-format.html))
+:	keySafe (string)
+:	content (string)
+
+Body (optional)
+:	attachments (string)
+
+Response:
+
+	–
+
+
+## Downloading public keys
+
+### Authentication
+No authentication required.
+
+### Get a list of public keys
+Method
+:	GET
+
+Path
+:	/$ADDRESS/keys/public
+
+Query parameters (optional)
+:	date (datetime), type (string)
+
+Response:
+
+	for each key [with (validFrom <= date + 1d) and (validUntil >= date - 1d)]:
+		id, type, pubkey, validFrom, validUntil, revocation
+
+`type` is one of "enc" or "sig" for encryption or signature;
+`revocation` holds a revocation certificate if the key was revoked
+
+### Get a public key
+Method
+:	GET
+
+Path
+:	/$ADDRESS/keys/public/$ID
+
+Response:
+
+	id, type, pubkey, validFrom, validUntil, revocation
+
+`$ID` can be set to `latest-enc` to retrieve the latest public encryption key
+
+
+## Managing the inbox
+
+### Authentication
+Method
+:	HTTP Basic Auth
+
+Username
+:	Kullo address
+
+Password
+:	Server Login Key: `loginKey`
+
+`loginKey` must be hex-encoded and lowercase
+
+### Messages
+#### Get a list of messages
+Method
+:	GET
+
+Path
+:	/$ADDRESS/messages
+
+Query parameters (optional)
+:	modifiedAfter (uint64),	includeData (bool)
+
+Response: ([message format reference](message-format.html))
+
+    resultsTotal (uint32)
+    resultsReturned (uint32)
+	data (array)
+		id, lastModified, [deleted, dateReceived, meta, keySafe, content, hasAttachments]
+
+The results are sorted by lastModified in ascending order.
+
+#### Get a message
+Method
+:	GET
+
+Path
+:	/$ADDRESS/messages/$ID
+
+Response: ([message format reference](message-format.html))
+
+	id, lastModified, deleted, dateReceived, meta, keySafe, content, hasAttachments
+
+`dateReceived` is the date and time at which the message was received;
+`meta` contains message meta data such as read or done (encrypted symmetrically);
+
+#### Get attachments for a message
+Method
+:	GET
+
+Path
+:	/$ADDRESS/messages/$ID/attachments
+
+Response:
+
+	attachments
+
+In this case, the attachments are not base64 encoded or wrapped in JSON. All of
+the body is just plain binary data.
+
+#### Modify message meta
+Method
+:	PATCH
+
+Path
+:	/$ADDRESS/messages/$ID
+
+Query parameters
+:	lastModified (uint64)
+
+Body
+:	meta (string)
+
+Response:
+
+	id, lastModified
+
+#### Delete a message
+Method
+:	DELETE
+
+Path
+:	/$ADDRESS/messages/$ID
+
+Query parameters
+:	lastModified (uint64)
+
+Response:
+
+	id, lastModified
+
+### Keys
+
+These APIs are currently read-only. This is work in progress.
+
+#### Get privateDataKey
+Method
+:	GET
+
+Path
+:	/$ADDRESS/keys/symm
+
+Response:
+
+	privateDataKey
+
+Note that the key is encrypted with the master key with algorithm and IV as described in [Cryptography](crypto.html).
+
+#### Get a list of asymmetric key pairs
+Method
+:	GET
+
+Path
+:	/$ADDRESS/keys/private
+
+Query parameters (optional)
+:	date (datetime), type (string)
+
+Response:
+
+	for each key [with (validFrom <= date + 1d) and (validUntil >= date - 1d)]:
+		id, type, pubkey, privkey, validFrom, validUntil, revocation
+
+`type` is one of "enc" or "sig" for encryption or signature;
+`revocation` holds a revocation certificate if the key was revoked
+
+Note that the private keys are encrypted with the master key with algorithm and IV as described in [Cryptography](crypto.html).
+
+#### Get an asymmetric key pair
+Method
+:	GET
+
+Path
+:	/$ADDRESS/keys/private/$ID
+
+Response:
+
+	id, type, pubkey, privkey, validFrom, validUntil, revocation
+
+Note that the private key is encrypted with the master key with algorithm and IV as described in [Cryptography](crypto.html).
+
+
+## Registration
+
+### Authentication
+No authentication required.
+
+### Registering a user account
+Method
+:	POST
+
+Path
+:	/accounts
+
+Body
+:	address (string)
+:	loginKey (string)
+:	privateDataKey (string)
+:	keypairEncryption (object with string keys `pubkey` and `privkey`)
+:	keypairSigning (object with string keys `pubkey` and `privkey`)
+
+Body (optional)
+:	challenge (object with the following keys)
+
+    * type (string)
+    * user (string)
+    * timestamp (uint64)
+    * text (string)
+
+:	challengeAuth (string)
+:	challengeAnswer (string)
+
+See [Registration challenges](registration.html) for more information on challenges.
+
+#### Response
+If challenge is required or challenge answer was not correct:
+
+Response `403`:
+
+	challenge, challengeAuth
+
+If no challenge is required or the challenge has been answered correctly:
+
+Response `200`:
+
+	-
+
+#### Example 1: Registration with challenge type "code"
+
+1st attempt to `POST https://kullo.example.com/accounts` using body
+
+    {
+        "address": "newman#example.com",
+        "loginKey": "acac0ac64f4f954d1e3e5930e98df3f30aff130134e553457d38c096ecd7f5d5fecab4eb3f10185d8e0d4ab6e3295d237fca94706d1750601e037106b05f2201",
+        "privateDataKey": "AK1WsmIxiuCWL1/0/RihIk/eZeSrMjHYLqqhY52EBSABenQHkB6MUncI7pKUdIxe",
+        "keypairEncryption":
+        {
+            "pubkey": "...",
+            "privkey": "...",
+            "validFrom": "",
+            "validUntil": ""
+        },
+        "keypairSigning":
+        {
+            "pubkey": "...",
+            "privkey": "...",
+            "validFrom": "",
+            "validUntil": ""
+        }
+    }
+
+Response `403`:
+
+    {
+        "challenge":
+        {
+            "type": "code",
+            "user": "newman#example.com",
+            "timestamp": 1406112445,
+            "text": "Please enter a valid registration code"
+        },
+        "challengeAuth": "d719eccdb4383908a5351c8bacd4537fde05ecb7"
+    }
+
+2nd attempt to `POST https://kullo.example.com/accounts` using body
+
+    {
+        "address": "newman#example.com",
+        "loginKey": "acac0ac64f4f954d1e3e5930e98df3f30aff130134e553457d38c096ecd7f5d5fecab4eb3f10185d8e0d4ab6e3295d237fca94706d1750601e037106b05f2201",
+        "privateDataKey": "AK1WsmIxiuCWL1/0/RihIk/eZeSrMjHYLqqhY52EBSABenQHkB6MUncI7pKUdIxe",
+        "keypairEncryption":
+        {
+            "pubkey": "...",
+            "privkey": "...",
+            "validFrom": "",
+            "validUntil": ""
+        },
+        "keypairSigning":
+        {
+            "pubkey": "...",
+            "privkey": "...",
+            "validFrom": "",
+            "validUntil": ""
+        },
+        "challenge":
+        {
+            "type": "code",
+            "user": "newman#example.com",
+            "timestamp": 1406112445,
+            "text": "Please enter a valid registration code"
+        },
+        "challengeAuth": "d719eccdb4383908a5351c8bacd4537fde05ecb7",
+        "challengeAnswer": "ABCE"
+    }
+
+Response `403`:
+
+    {
+        "challenge":
+        {
+            "type": "code",
+            "user": "newman#example.com",
+            "timestamp": 1406112637,
+            "text": "Please enter a valid registration code"
+        },
+        "challengeAuth": "8c46b0372a5db313178fa8274d746aa80ca4b043"
+    }
+
+3rd attempt to `POST https://kullo.example.com/accounts` using body
+
+    {
+        "address": "newman#example.com",
+        "loginKey": "acac0ac64f4f954d1e3e5930e98df3f30aff130134e553457d38c096ecd7f5d5fecab4eb3f10185d8e0d4ab6e3295d237fca94706d1750601e037106b05f2201",
+        "privateDataKey": "AK1WsmIxiuCWL1/0/RihIk/eZeSrMjHYLqqhY52EBSABenQHkB6MUncI7pKUdIxe",
+        "keypairEncryption":
+        {
+            "pubkey": "...",
+            "privkey": "...",
+            "validFrom": "",
+            "validUntil": ""
+        },
+        "keypairSigning":
+        {
+            "pubkey": "...",
+            "privkey": "...",
+            "validFrom": "",
+            "validUntil": ""
+        },
+        "challenge":
+        {
+            "type": "code",
+            "user": "newman#example.com",
+            "timestamp": 1406112637,
+            "text": "Please enter a valid registration code"
+        },
+        "challengeAuth": "8c46b0372a5db313178fa8274d746aa80ca4b043",
+        "challengeAnswer": "ABCD"
+    }
+
+Response `200`:
+
+    –
+

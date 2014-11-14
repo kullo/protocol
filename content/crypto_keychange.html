@@ -1,0 +1,59 @@
+---
+extends: base.j2
+default_block: main_md
+title: Changing keys
+---
+
+[TOC]
+
+**ATTENTION: This is currently only a design document; none of this is implemented!**
+
+## Changing Symmetric Keys
+
+* C: generate new `masterKey` and derive `loginKey`
+* C: generate new `privateDataKey`
+* C: encrypt `privateDataKey` with `masterKey`
+* C->S: store `loginKey` and encrypted `privateDataKey`
+* download, re-encrypt and upload all data that has been encrypted with `privateDataKey`
+
+
+## Changing Asymmetric Keys
+
+### Adding Key Pairs
+* C: generate new encryption and signature key pairs
+* C: encrypt PrivDec, PrivSign
+* C->S: store new key pairs
+* S: archive old keys, securely delete old PrivSign
+
+
+## Recovery from Attacks
+
+### Recovery after someone got to know any of the symmetric keys
+
+#### If attacker didn't change the `loginKey`
+In this case, the user can log in and use his account without restrictions. However, the attacker's access must be revoked:
+
+* change `masterKey`, `loginKey` and `privateDataKey` as explained above
+* revoke all valid key pairs
+* add a new set of asymmetric keys
+
+#### If attacker changed the `loginKey` AND user has an offline backup of the key pairs
+
+* account gets locked
+* user needs to authenticate with the provider (copy of passport etc.)
+* key material added by attacker is removed but archived for decryption/verification of messages sent by the attacker
+* if the `privateDataKey` was changed: provider deletes all data encrypted with (the attacker's) `privateDataKey`, as it cannot be recovered
+* user gets a temporary `loginKey`
+* account is reactivated
+* proceed as if the attacker hadn't changed the password
+
+#### If attacker changed the `loginKey` AND user doesn't have an offline backup of the key pairs
+
+* account gets locked
+* user needs to authenticate with the provider (copy of passport etc.)
+* key material added by attacker is removed but archived for decryption/verification of messages sent by the attacker
+* if the `privateDataKey` was changed: provider deletes all data encrypted with (the attacker's) `privateDataKey`, as it cannot be recovered
+* provider deletes all messages, as they cannot be decrypted
+* user gets a temporary `loginKey` to log in and overwrite the key material
+* account is reactivated
+

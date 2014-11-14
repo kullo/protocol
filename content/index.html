@@ -1,0 +1,41 @@
+---
+extends: base.j2
+default_block: main_md
+title: The Open Kullo Protocol
+---
+
+One pillar of Kullo is transparency.
+This includes that the communication between client and server follows an open protocol.
+If you're interested in how Kullo works on a technical level, or you even want to implement your own client or server, please have a look at these docs.
+
+If any part of this material is incomprehensible, incomplete, or even plain wrong, please let us know at hi#kullo.net. Or, if its easier for you, by email: Simply replace # by @.
+
+## Warning
+Some parts of the protocol are still in development and will most probably evolve over the next months.
+A notable area that is bound to change is the handling of asymmetric key pairs, especially valid from/until dates and revocation.
+
+## Components of the Kullo system
+Kullo builds on a client-server architecture, using HTTP as the communication channel.
+Kullo offers end-to-end encryption of messages, so that even the server has no access to message contents.
+In addition to that, Kullo uses TLS for all client-server communication (HTTPS), which hides communication metadata from third parties.
+
+### Kullo address
+A Kullo address looks like this: `jane.doe#example.net`.
+It is composed of the *local part* (`jane.doe`) and the *domain part* (`example.net`), separated by a hash sign (`#`).
+
+Read the full [Kullo address specification](kullo_address.html) for more information.
+
+### Servers
+A Kullo server is basically a storage system with access control.
+The domain part of a Kullo address determines which server should be responsible for the address:
+It's the server with the FQDN `kullo.domain-part`.
+For example, the messages for `jane.doe#example.net` are stored on `kullo.example.net`.
+Clients communicate with Kullo servers through a RESTful [HTTP API](http-api.html).
+
+### Clients
+Due to end-to-end encryption, the client is where the more interesting things happen.
+It is responsible for user registration and creating and handling keys,
+it downloads, decrypts and verifies the user's messages and presents them to the user,
+it synchronizes editable message metadata such as the *read* and *done* states of messages,
+and it sends messages to other users.
+

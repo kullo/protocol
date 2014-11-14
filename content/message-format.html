@@ -1,0 +1,139 @@
+---
+extends: base.j2
+default_block: main_md
+title: Message Format Reference
+---
+
+[TOC]
+
+## Common rules
+
+* All fields must be filled with non-empty values
+  (exception: fields with an empty default value).
+* All strings are encoded in UTF-8.
+* Times are given in RFC 3339 format (a subset of ISO 8601).
+* Numbers are always stored in network byte order (big endian). This doesn't
+  apply to JSON, which is a human readable format, so that numbers are
+  represented by printable characters.
+
+## Message
+
+### Size limits
+All size limits are given in KiB or MiB, also known as [kibibytes](https://en.wikipedia.org/wiki/Kibibyte) or [mebibytes](https://en.wikipedia.org/wiki/Mebibyte).
+
+ * `keySafe`: 1 KiB
+ * `content`: 128 KiB
+ * `attachments`: 16 MiB (not the final value, will be increased)
+ * `meta`: 1 KiB
+
+### Field "keySafe"
+
+Parameters
+: msgFormat (uint32)
+: symmCipher (string)
+: symmKey (string)
+: hashAlgo (string)
+
+`msgFormat` is fixed to 1.
+`symmCipher` is fixed for msgFormat == 1.
+`symmKey` is a base64-encoded random symmetric key. It must be usable for the
+algorithm given in `symmCipher`. It must not be reused for multiple messages or
+even for multiple copies of the same message.
+`hashAlgo` is fixed for msgFormat == 1.
+
+**Example:**
+
+    {
+        "msgFormat": 1,
+        "symmCipher": "AES-256/GCM",
+        "symmKey": "...",
+        "hashAlgo": "SHA-512"
+    }
+
+#### Format
+
+ * encode the JSON as UTF-8
+ * encrypt the encoded JSON using RSA-4096/OAEP/SHA-512 and `pubEnc` of the receiver
+ * concatenate the encryption key ID (uint32) and the encrypted JSON
+
+### Field "content"
+
+    {
+        "sender": {
+            "name": "John Doe",
+            "address": "john.doe#kullo.net",
+            "organization": "Doe Corp.",         // optional, default: ""
+            "avatar": {                          // optional, default: {}
+                "mimeType": "...",               // "image/png" or "image/jpeg"
+                "data": "..."                    // base64-encoded image file
+                                                 // max. resolution: 200x200 px
+            }
+        },
+        "recipients": [
+            "alice#kullo.net",
+            "bob#kullo.net"
+        ],
+        "dateSent": "2013-11-04T16:19:31+01:00",
+        "text": "Here comes the message text.",  // optional, default: ""
+        "footer": "Here comes the footer.",      // optional, default: ""
+        "attachmentsIndex": [                    // optional, default: []
+            {
+                "filename": "my_first_file.pdf",
+                "mimeType": "application/pdf",
+                "note": "First file",            // optional, default: ""
+                "size": 123456,
+                "hash": "..."                    // SHA-512 of file content, hex format
+            },
+            {
+                "filename": "my second file.jpg",
+                "mimeType": "application/jpeg",
+                "note": "Last file",
+                "size": 1234567,
+                "hash": "..."
+            }
+        }
+    }
+
+#### Format
+
+ * encode the JSON as UTF-8
+ * gzip-compress the encoded JSON
+ * calculate a RSA-4096/PSS/SHA-512 signature of the compressed JSON, using
+   `privSig` of the sender
+ * concatenate the signature key ID (uint32), the signature length in bytes
+   (uint32), the signature and the compressed JSON
+ * encrypt the result using the algorithm `keySafe.symmCipher`, the static IV =
+   `"content"` and the key `keySafe.symmKey`
+ * base64-encode the encrypted data
+
+### Field "attachments"
+
+The `attachments` field contains all attachments as one binary block.
+
+#### Format
+
+ * concatenate all attachments' data in the order given in `content.attachmentsIndex`
+ * gzip-compress the result
+ * encrypt the compressed result using the algorithm `keySafe.symmCipher`, the
+   static IV = `"attachments"` and the key `keySafe.symmKey`
+ * base64-encode the encrypted data
+
+### Field "meta"
+
+    {
+        "read": 1,
+        "done": 0
+    }
+
+Note that we use `0` and `1`, not `false` and `true`. The reason is that `true`
+has a different length than `false`, so that the values of read and done could
+be inferred by looking at the length of the ciphertext.
+
+#### Format
+
+ * encode the JSON as UTF-8
+ * encrypt the encoded JSON using AES-256/GCM, the `privateDataKey` and a random IV of
+   128 bit (16 bytes)
+ * concatenate the format version (uint32, fixed to 1), the IV and the encrypted
+   JSON
+
