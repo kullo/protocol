@@ -27,11 +27,11 @@
 				<a href="./" id="mainlogo"><img src="{{ media_url('img/logo_transparent.png') }}" alt="The Open Kullo Protocol" /></a>
 			</div>
 			<header class="span9">
-		        <hgroup>
-		            {% if resource.meta.title-%}<h1>{{resource.meta.title}}</h1>{%-endif %}
-		        </hgroup>
-		    </header>
-	    </div>
+				{% if resource.meta.title-%}
+					<h1>{{resource.meta.title}}</h1>
+				{%-endif %}
+			</header>
+		</div>
 		<div class="row">
 			<nav class="span3" id="mainmenu">
 			{# Move main menu rendering away from the base layout. This

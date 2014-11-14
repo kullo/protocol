@@ -1,6 +1,6 @@
 mode: development
 media_root: media
-media_url: ./media
+media_url: media
 base_url: ./
 template: hyde.ext.templates.jinja.Jinja2Template
 plugins:
