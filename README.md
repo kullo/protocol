@@ -1,13 +1,25 @@
 The Open Kullo Protocol
 =======================
 
+This is the source code of The Open Kullo Protocol.
+
+View online
+-----------
+
+A current version of the protocol is avaiable via the following URL:
+
+https://www.kullo.net/protocol/
+
+Building from source
+--------------------
+
 These docs are based on the Hyde static website generator.
 
-## Install in Ubuntu
+### Install Hyde in Ubuntu
 
     $ sudo apt-get install hyde
 
-## Generate static website
+### Generate static website
 
 The following puts HTML files and the necessary media (CSS, Images, ...) into the `deploy` subdir:
 
@@ -17,7 +29,7 @@ The following puts HTML files and the necessary media (CSS, Images, ...) into th
 
     make
 
-## Run local server
+### Run local server
 
 Launches a local server that will update the generated HTML on each change automatically:
 
