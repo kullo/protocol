@@ -35,6 +35,12 @@ nav li {
 	margin-bottom: 5px;
 }
 
+footer {
+	margin-top: 20px;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
 dd { margin-bottom: 10px; }
 dd > ul,
 dd > ol { margin-left: 15px; }

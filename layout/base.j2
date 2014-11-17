@@ -27,11 +27,9 @@
 				<a href="./" id="mainlogo"><img src="{{ media_url('img/logo_transparent.png') }}" alt="The Open Kullo Protocol" /></a>
 			</div>
 			<header class="span9">
-				{% if resource.meta.title-%}
-					<h1>{{resource.meta.title}}</h1>
-				{%-endif %}
-			</header>
-		</div>
+		        {% if resource.meta.title-%}<h1>{{resource.meta.title}}</h1>{%-endif %}
+		    </header>
+	    </div>
 		<div class="row">
 			<nav class="span3" id="mainmenu">
 			{# Move main menu rendering away from the base layout. This
@@ -53,6 +51,32 @@
 			    {% endblock %}
 			</article>
 	    </div>
+		<div class="row">
+			<footer class="offset3 span9">
+				{# BEGIN license #}
+			    <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/">
+			    	<img alt="Creative Commons License" style="border-width:0"
+			    			src="{{ media_url('img/cc-by-nd.png') }}" />
+	    		</a>
+	    		<br />
+	    		<span xmlns:dct="http://purl.org/dc/terms/"
+	    				href="http://purl.org/dc/dcmitype/Text"
+	    				property="dct:title" rel="dct:type">
+	    			The Open Kullo Protocol
+    			</span>
+    			by
+    			<a xmlns:cc="http://creativecommons.org/ns#"
+    					href="https://www.kullo.net/protocol/"
+    					property="cc:attributionName"
+    					rel="cc:attributionURL">
+    				Kullo GmbH
+				</a>
+				is licensed under a
+				<a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/">
+					Creative Commons Attribution-NoDerivatives 4.0 International License</a>.
+				{# END license #}
+			</footer>
+		</div>
 
         {# Some parts of the web are not needed for development and can
            wait for production (e.g. analytics). They can be included in

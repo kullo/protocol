@@ -1,23 +1,21 @@
-The Open Kullo Protocol
-=======================
+# The Open Kullo Protocol
 
 This is the source code of The Open Kullo Protocol.
 
-View online
------------
+## Read the docs online
 
-A current version of the protocol is avaiable via the following URL:
+The current version of the protocol is available via the following URL:
 
 https://www.kullo.net/protocol/
 
-Building from source
---------------------
+## Rebuild the docs from source
 
-These docs are based on the Hyde static website generator.
+These docs are based on the [Hyde static website generator](https://hyde.github.io/).
 
-### Install Hyde in Ubuntu
+### Install Hyde
 
-    $ sudo apt-get install hyde
+* Ubuntu: `sudo apt-get install hyde`
+* [pip](https://pip.pypa.io/en/latest/installing.html): `pip install hyde`
 
 ### Generate static website
 
@@ -38,3 +36,10 @@ Launches a local server that will update the generated HTML on each change autom
 Now, access docs via webbrowser: <http://localhost:8082/index.html>
 
 If you change a file, just reload the page in the browser to see the changes.
+
+## License
+
+![Creative Commons License](https://i.creativecommons.org/l/by-nd/4.0/88x31.png)
+
+The Open Kullo Protocol by Kullo GmbH is licensed under a [Creative Commons Attribution-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nd/4.0/).
+
