@@ -28,7 +28,7 @@ When we use symmetric encryption, we generally use a random IV of 128 bits.
 We prepend this IV to the ciphertext, so the first 16 bytes of a symmetric ciphertext must be used as IV for decryption of the following data.
 
 There are two exceptions to this rule:
-The `content` and `attachment` fields of messages use fixed IVs.
+The `content` and `attachments` fields of messages use fixed IVs.
 See [Message format](message-format.html) for details.
 This is secure because with GCM, reuse is only a problem if both key and IV are reused.
 
