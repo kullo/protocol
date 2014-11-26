@@ -112,6 +112,13 @@ The `attachments` field contains all attachments as one binary block.
 
 #### Format
 
+*Attention!*
+If the message doesn't contain any attachments,
+or if it does only contain zero-length attachments,
+the `attachments` field must be empty.
+
+If there is at least one non-empty attachment, the following format is used:
+
  * concatenate all attachments' data in the order given in `content.attachmentsIndex`
  * gzip-compress the result
  * encrypt the compressed result using the algorithm `keySafe.symmCipher`, the
