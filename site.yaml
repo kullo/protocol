@@ -23,6 +23,8 @@ context:
             url: index.html
           - title: Kullo Addresses
             url: kullo_address.html
+          - title: Registration
+            url: registration.html
           - title: Cryptography
             url: crypto.html
           - title: Synchronization

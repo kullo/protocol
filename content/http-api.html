@@ -220,6 +220,8 @@ Note that the private key is encrypted with the master key with algorithm and IV
 
 ## Registration
 
+See [Registration](registration.html) for more information on the registration process.
+
 ### Authentication
 No authentication required.
 
@@ -244,138 +246,27 @@ Body (optional)
     * user (string)
     * timestamp (uint64)
     * text (string)
+    * optional: can have more fields, depending on type
 
 :	challengeAuth (string)
 :	challengeAnswer (string)
 
-See [Registration challenges](registration.html) for more information on challenges.
-
 #### Response
-If challenge is required or challenge answer was not correct:
-
-Response `403`:
-
-	challenge, challengeAuth
-
 If no challenge is required or the challenge has been answered correctly:
 
-Response `200`:
+Response `200` (Ok):
 
 	-
 
-#### Example 1: Registration with challenge type "code"
+If the address is already taken:
 
-1st attempt to `POST https://kullo.example.com/accounts` using body
+Response `409` (Conflict):
 
-    {
-        "address": "newman#example.com",
-        "loginKey": "acac0ac64f4f954d1e3e5930e98df3f30aff130134e553457d38c096ecd7f5d5fecab4eb3f10185d8e0d4ab6e3295d237fca94706d1750601e037106b05f2201",
-        "privateDataKey": "AK1WsmIxiuCWL1/0/RihIk/eZeSrMjHYLqqhY52EBSABenQHkB6MUncI7pKUdIxe",
-        "keypairEncryption":
-        {
-            "pubkey": "...",
-            "privkey": "...",
-            "validFrom": "",
-            "validUntil": ""
-        },
-        "keypairSigning":
-        {
-            "pubkey": "...",
-            "privkey": "...",
-            "validFrom": "",
-            "validUntil": ""
-        }
-    }
+    -
 
-Response `403`:
+If challenge is required or challenge answer was not correct:
 
-    {
-        "challenge":
-        {
-            "type": "code",
-            "user": "newman#example.com",
-            "timestamp": 1406112445,
-            "text": "Please enter a valid registration code"
-        },
-        "challengeAuth": "d719eccdb4383908a5351c8bacd4537fde05ecb7"
-    }
+Response `403` (Forbidden):
 
-2nd attempt to `POST https://kullo.example.com/accounts` using body
-
-    {
-        "address": "newman#example.com",
-        "loginKey": "acac0ac64f4f954d1e3e5930e98df3f30aff130134e553457d38c096ecd7f5d5fecab4eb3f10185d8e0d4ab6e3295d237fca94706d1750601e037106b05f2201",
-        "privateDataKey": "AK1WsmIxiuCWL1/0/RihIk/eZeSrMjHYLqqhY52EBSABenQHkB6MUncI7pKUdIxe",
-        "keypairEncryption":
-        {
-            "pubkey": "...",
-            "privkey": "...",
-            "validFrom": "",
-            "validUntil": ""
-        },
-        "keypairSigning":
-        {
-            "pubkey": "...",
-            "privkey": "...",
-            "validFrom": "",
-            "validUntil": ""
-        },
-        "challenge":
-        {
-            "type": "code",
-            "user": "newman#example.com",
-            "timestamp": 1406112445,
-            "text": "Please enter a valid registration code"
-        },
-        "challengeAuth": "d719eccdb4383908a5351c8bacd4537fde05ecb7",
-        "challengeAnswer": "ABCE"
-    }
-
-Response `403`:
-
-    {
-        "challenge":
-        {
-            "type": "code",
-            "user": "newman#example.com",
-            "timestamp": 1406112637,
-            "text": "Please enter a valid registration code"
-        },
-        "challengeAuth": "8c46b0372a5db313178fa8274d746aa80ca4b043"
-    }
-
-3rd attempt to `POST https://kullo.example.com/accounts` using body
-
-    {
-        "address": "newman#example.com",
-        "loginKey": "acac0ac64f4f954d1e3e5930e98df3f30aff130134e553457d38c096ecd7f5d5fecab4eb3f10185d8e0d4ab6e3295d237fca94706d1750601e037106b05f2201",
-        "privateDataKey": "AK1WsmIxiuCWL1/0/RihIk/eZeSrMjHYLqqhY52EBSABenQHkB6MUncI7pKUdIxe",
-        "keypairEncryption":
-        {
-            "pubkey": "...",
-            "privkey": "...",
-            "validFrom": "",
-            "validUntil": ""
-        },
-        "keypairSigning":
-        {
-            "pubkey": "...",
-            "privkey": "...",
-            "validFrom": "",
-            "validUntil": ""
-        },
-        "challenge":
-        {
-            "type": "code",
-            "user": "newman#example.com",
-            "timestamp": 1406112637,
-            "text": "Please enter a valid registration code"
-        },
-        "challengeAuth": "8c46b0372a5db313178fa8274d746aa80ca4b043",
-        "challengeAnswer": "ABCD"
-    }
-
-Response `200`:
-
-    –
+	challenge, challengeAuth
 
