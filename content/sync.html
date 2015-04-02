@@ -42,7 +42,11 @@ A tombstone record is left in place (with id and lastModified kept intact, and d
 All other fields are cleared during deletion.
 * The merging policy is this:
     * deletion always wins
-    * `read`, `done`, and other potential fields in `meta`: local wins over remote modification
+    * `read` and `done`: local wins over remote modification
+        * remote wins only if the remote value has changed since last sync
+    * `delivery`:
+        * `delivered` overwrites `failed`, which overwrites `unsent`
+        * If there's already a record with the same state: remote wins
 
 ### Uploading local modifications
 If there are local modifications to the messages, upload them to the server:

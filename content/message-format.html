@@ -129,12 +129,59 @@ If there is at least one non-empty attachment, the following format is used:
 
     {
         "read": 1,
-        "done": 0
+        "done": 0,
+        "delivery": {                            // optional
+            "recipient1#kullo.net": {
+                "state": "delivered",
+                "date": "2015-01-14T15:18:00+01:00"
+            },
+            "recipient2#kullo.net": {
+                "state": "unsent",
+                "lock": {                        // optional
+                    "holder": "client id",
+                    "expires": "2015-01-14T16:18:00+01:00"
+                }
+            },
+            "recipient3#kullo.net": {
+                "state": "failed",
+                "date": "2015-01-14T15:19:00+01:00"
+                "reason": "doesnt_exist"
+            }
+        }
     }
 
-Note that we use `0` and `1`, not `false` and `true`. The reason is that `true`
-has a different length than `false`, so that the values of read and done could
-be inferred by looking at the length of the ciphertext.
+Note that for `read` and `done`, we use `0` and `1`, not `false` and `true`.
+The reason is that `true` has a different length than `false`,
+so that the values of read and done could be inferred by looking at the length of the ciphertext.
+
+`delivery` only exists for messages that have been sent by the current user.
+It exists to track message delivery to the recipients.
+There's an entry for each recipient, containing the following fields:
+
+* `state`:
+    * `delivered` for a message that was successfully put into the receiver's inbox
+    * `unsent` for a message that has not been sent yet, either because it
+      has not been tried, or because there has been a temporary error
+    * `failed` for a message where sending failed permanently
+* `date` (only for `sent` and `failed`):
+    * an RFC 3339 timestamp of the time when success or failure happened
+* `reason` (only for `failed`):
+    * a reason code from the following set of options:
+        * `doesnt_exist` when the recipient address doesn't exist
+        * `too_large` when the message has been rejected due to excessive size
+        * `canceled` when the user has canceled the sending process
+        * `unknown` for everything else
+* `lock` (only for `unsent`):
+    * can be set by clients that want to send the message
+    * `holder`: a self-assigned ID of the client holding the lock
+        * must contain randomness to prevent collisions between clients
+        * may also contain for example the OS host name and/or OS user name
+    * `expires`: expiry date, which the client can choose depending on
+      e.g. the message size, bandwidth etc.
+      (must not exceed an hour from the time of lock acquisition)
+    * Clients must acquire a lock before trying to send the message.
+    * Clients must not try to send the message
+      as long as an unexpired lock of another client is present.
 
 #### Format
 
