@@ -35,11 +35,11 @@ Body ([reference](message-format.html))
 Body (only with authentication)
 :	meta (string)
 
-Response (without authentication):
+**Response** (without authentication)
 
 	–
 
-Response (with authentication):
+**Response** (with authentication)
 
 	id, lastModified, dateReceived
 
@@ -60,7 +60,7 @@ Query parameters
 :	* date (datetime, optional)
 	* type (string, optional)
 
-Response:
+**Response**
 
 	for each key [with (validFrom <= date + 1d) and (validUntil >= date - 1d)]:
 		id, type, pubkey, validFrom, validUntil, revocation
@@ -75,7 +75,7 @@ Method
 Path
 :	/$ADDRESS/keys/public/$ID
 
-Response:
+**Response**
 
 	id, type, pubkey, validFrom, validUntil, revocation
 
@@ -108,7 +108,7 @@ Query parameters
 :	* modifiedAfter (uint64, optional)
 	* includeData (bool, optional)
 
-Response: ([message format reference](message-format.html))
+**Response** ([message format reference](message-format.html))
 
     resultsTotal (uint32)
     resultsReturned (uint32)
@@ -124,7 +124,7 @@ Method
 Path
 :	/$ADDRESS/messages/$ID
 
-Response: ([message format reference](message-format.html))
+**Response** ([message format reference](message-format.html))
 
 	id, lastModified, deleted, dateReceived, meta, keySafe, content, hasAttachments
 
@@ -138,7 +138,7 @@ Method
 Path
 :	/$ADDRESS/messages/$ID/attachments
 
-Response:
+**Response**
 
 	attachments
 
@@ -158,7 +158,7 @@ Query parameters
 Body
 :	* meta (string)
 
-Response:
+**Response**
 
 	id, lastModified
 
@@ -172,7 +172,7 @@ Path
 Query parameters
 :	* lastModified (uint64)
 
-Response:
+**Response**
 
 	id, lastModified
 
@@ -187,7 +187,7 @@ Method
 Path
 :	/$ADDRESS/keys/symm
 
-Response:
+**Response**
 
 	privateDataKey
 
@@ -204,7 +204,7 @@ Query parameters
 :	* date (datetime, optional)
 	* type (string, optional)
 
-Response:
+**Response**
 
 	for each key [with (validFrom <= date + 1d) and (validUntil >= date - 1d)]:
 		id, type, pubkey, privkey, validFrom, validUntil, revocation
@@ -221,7 +221,7 @@ Method
 Path
 :	/$ADDRESS/keys/private/$ID
 
-Response:
+**Response**
 
 	id, type, pubkey, privkey, validFrom, validUntil, revocation
 
@@ -254,7 +254,8 @@ Body
 
 When `challenge` is set, `challengeAuth` and `challengeAnswer` must be set as well.
 
-#### Response
+**Response**
+
 If no challenge is required or the challenge has been answered correctly:
 
 Response `200` (Ok):
