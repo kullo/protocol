@@ -26,11 +26,9 @@ Path
 :	/$ADDRESS/messages
 
 Body ([reference](message-format.html))
-:	keySafe (string)
-:	content (string)
-
-Body (optional)
-:	attachments (string)
+:	* keySafe (string)
+	* content (string)
+	* attachments (string, optional)
 
 Response:
 
@@ -49,8 +47,9 @@ Method
 Path
 :	/$ADDRESS/keys/public
 
-Query parameters (optional)
-:	date (datetime), type (string)
+Query parameters
+:	* date (datetime, optional)
+	* type (string, optional)
 
 Response:
 
@@ -86,7 +85,7 @@ Username
 Password
 :	Server Login Key: `loginKey`
 
-`loginKey` must be hex-encoded and lowercase
+The `loginKey` must be hex-encoded and lowercase.
 
 ### Messages
 #### Get a list of messages
@@ -96,8 +95,9 @@ Method
 Path
 :	/$ADDRESS/messages
 
-Query parameters (optional)
-:	modifiedAfter (uint64),	includeData (bool)
+Query parameters
+:	* modifiedAfter (uint64, optional)
+	* includeData (bool, optional)
 
 Response: ([message format reference](message-format.html))
 
@@ -144,10 +144,10 @@ Path
 :	/$ADDRESS/messages/$ID
 
 Query parameters
-:	lastModified (uint64)
+:	* lastModified (uint64)
 
 Body
-:	meta (string)
+:	* meta (string)
 
 Response:
 
@@ -161,7 +161,7 @@ Path
 :	/$ADDRESS/messages/$ID
 
 Query parameters
-:	lastModified (uint64)
+:	* lastModified (uint64)
 
 Response:
 
@@ -191,8 +191,9 @@ Method
 Path
 :	/$ADDRESS/keys/private
 
-Query parameters (optional)
-:	date (datetime), type (string)
+Query parameters
+:	* date (datetime, optional)
+	* type (string, optional)
 
 Response:
 
@@ -233,23 +234,16 @@ Path
 :	/accounts
 
 Body
-:	address (string)
-:	loginKey (string)
-:	privateDataKey (string)
-:	keypairEncryption (object with string keys `pubkey` and `privkey`)
-:	keypairSigning (object with string keys `pubkey` and `privkey`)
+:	* address (string)
+	* loginKey (string)
+	* privateDataKey (string)
+	* keypairEncryption (object with string keys `pubkey` and `privkey`)
+	* keypairSigning (object with string keys `pubkey` and `privkey`)
+	* challenge (object with the following keys, optional): type (string), user (string), timestamp (uint64), text (string), optional: can have more fields, depending on type
+	* challengeAuth (string, optional)
+	* challengeAnswer (string, optional)
 
-Body (optional)
-:	challenge (object with the following keys)
-
-    * type (string)
-    * user (string)
-    * timestamp (uint64)
-    * text (string)
-    * optional: can have more fields, depending on type
-
-:	challengeAuth (string)
-:	challengeAnswer (string)
+When `challenge` is set, `challengeAuth` and `challengeAnswer` must be set as well.
 
 #### Response
 If no challenge is required or the challenge has been answered correctly:

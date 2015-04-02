@@ -43,9 +43,24 @@ footer {
     text-align: center;
 }
 
-dd { margin-bottom: 10px; }
+
+dt {
+    float: left;
+    min-width: 12em;
+}
+dd {
+    margin-left: 12em;
+    margin-bottom: 0.4em;
+}
 dd > ul,
-dd > ol { margin-left: 15px; }
+dd > ol {
+    margin-left: 16px;
+    margin-bottom: 0.4em;
+}
+
+ul {
+    list-style-type: square;
+}
 
 pre {
 	word-break: initial;
