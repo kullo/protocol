@@ -218,6 +218,32 @@ Response:
 
 Note that the private key is encrypted with the master key with algorithm and IV as described in [Cryptography](crypto.html).
 
+### Account management
+
+#### Account info
+
+Lets the user access information related to his account.
+
+Method
+:	GET
+
+Path
+:	/$ADDRESS/account/info
+
+**Response**
+
+	[settingsLocation]
+
+`settingsLocation` is an (optional) URL where the user can server specific settings. That might be used for notification settings or billig.
+
+**Example**
+
+GET https://kullo.example.com/v1/someuser%23example.com/account/info
+
+	{
+	    "settingsLocation": "https://webconfig.example.com/QamMYWfeoEobhyuVDIPOppRHzrQPzsfi"
+	}
+
 
 ## Registration
 
