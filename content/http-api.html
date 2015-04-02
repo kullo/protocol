@@ -17,6 +17,8 @@ Example: To get the messages of `jane.doe#example.net`, access `https://kullo.ex
 
 ### Authentication
 No authentication required.
+If you authenticate, you can also post `meta`
+and you will get a non-empty response (see below for details).
 
 ### Post a new message to someone's inbox
 Method
@@ -30,9 +32,16 @@ Body ([reference](message-format.html))
 	* content (string)
 	* attachments (string, optional)
 
-Response:
+Body (only with authentication)
+:	meta (string)
+
+Response (without authentication):
 
 	–
+
+Response (with authentication):
+
+	id, lastModified, dateReceived
 
 
 ## Downloading public keys
