@@ -50,6 +50,20 @@ There are multiple challenge types to account for different needs.
 In order to be able to register a Kullo account on an arbitraty server,
 a Kullo client SHOULD implement all of them.
 
+### Challenge type "blocked"
+
+This challenge indicates that the given address cannot be registered on this server.
+The server accepts no answers to this challenge.
+
+#### Example challenge
+
+    {
+        "type": "blocked",
+        "user": "someuser#example.com",
+        "timestamp": 1409326432,
+        "text": "The address 'someuser#example.com' cannot be registered."
+    }
+
 ### Challenge type "captcha"
 
 The server sends a base64 encoded PNG captcha to the client, including an encrypted `expectedAnswer`.
