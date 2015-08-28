@@ -116,6 +116,9 @@ The `attachments` field contains all attachments as one binary block.
 If the message doesn't contain any attachments,
 or if it does only contain zero-length attachments,
 the `attachments` field must be empty.
+However, there are old versions of the client software that uploaded invalid
+attachment records for messages without non-empty attachments. To cope with that,
+simply don't try to download and parse them if a message doesn't have non-empty attachments.
 
 If there is at least one non-empty attachment, the following format is used:
 

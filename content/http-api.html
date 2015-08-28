@@ -140,10 +140,14 @@ Path
 
 **Response**
 
+`200 OK` if the message exists and has non-empty attachments. Body:
+
 	attachments
 
 In this case, the attachments are not base64 encoded or wrapped in JSON. All of
 the body is just plain binary data.
+
+`404 Not Found` if either the message doesn't exist or has no non-empty attachments.
 
 #### Modify message meta
 Method
