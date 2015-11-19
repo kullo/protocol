@@ -15,10 +15,10 @@ The following sections provide detailed information.
 
 Note: In the following, "owner" denotes the user for which the keys are generated/stored.
 
-## masterKey
+## MasterKey
 
 A random bit string that acts as the secret input into the derivation of `loginKey` and is used for the encryption of `privateDataKey`.
-When serialized as text (e.g. as a paper backup), a special format as described in [Text format for masterKey](crypto_keybackup.html) should be used.
+When serialized as text (e.g. as a paper backup), a special format as described in [Text format for MasterKey](crypto_keybackup.html) should be used.
 
 Creation
 :	String of 256 random bits (32 bytes). It is vital that the random number generator is good enough to be used for cryptography ([Wikipedia: Cryptographically secure pseudorandom number generator](http://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator)).
@@ -35,7 +35,7 @@ Server-side Protection
 Used by clients to authenticate to the server.
 
 Creation
-:	Derived from masterKey, using HKDF ([RFC 5869](http://tools.ietf.org/html/rfc5869)):
+:	Derived from MasterKey, using HKDF ([RFC 5869](http://tools.ietf.org/html/rfc5869)):
 	`loginKey = HKDF-Expand(PRK=masterKey, info="login^"+kulloAddress, L=512/8) using HMAC-SHA-512`
 
 API Access Control

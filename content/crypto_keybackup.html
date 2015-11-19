@@ -1,10 +1,10 @@
 ---
 extends: base.j2
 default_block: main_md
-title: Text format for masterKey
+title: Text format for MasterKey
 ---
 
-The masterKey should be printed out by the user for password recovery.
+The MasterKey should be printed out by the user for password recovery.
 It should be encoded as follows:
 
 * Split 256 bit key into sixteen 16 bit blocks.
@@ -23,9 +23,8 @@ It should be encoded as follows:
 	407924 293407 624445 483701
     -----END KULLO PRIVATE MASTER KEY-----
 
-## Don't encode the masterKey as a QR code!
+## Don't encode the MasterKey as a QR code!
 It is not secure to generate QR codes of the given key!
 Some (most?) QR code scanners automatically pass scanned information to other applications.
 For example, the popular Android scanner [Barcode Scanner](https://play.google.com/store/apps/details?id=com.google.zxing.client.android) copies every scanned plaintext to the system clipboard by default, making it accessible to every other Android app running in the background.
 Some apps might even launch internet searches without any user interaction.
-
