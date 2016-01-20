@@ -304,3 +304,52 @@ Response `403` (Forbidden):
 
 	challenge, challengeAuth
 
+
+## Push notifications
+
+Please be aware that push notifications in the official Kullo apps are only available to users that use our Kullo server `kullo.kullo.net`.
+This is a technical necessity, because the app and server are tightly coupled when implementing Google Cloud Messaging or Apple Push Notifications.
+You can only implement this in your own apps when combined with your own server.
+Thus, this section is for informational purposes only.
+
+### Authentication
+
+See [Managing the inbox](#managing-the-inbox).
+
+### Adding a new Google Cloud Messaging registration
+Method
+:	POST
+
+Path
+:	/$ADDRESS/push/gcm
+
+Body
+:	* registration_token (string)
+
+**Response**
+
+Response `200` (Ok):
+
+	-
+
+### Removing a Google Cloud Messaging registration
+Method
+:	DELETE
+
+Path
+:	/$ADDRESS/push/gcm/$REGISTRATION_TOKEN
+
+**Response**
+
+If the registration token could be found and deleted:
+
+Response `200` (Ok):
+
+	-
+
+If the token could not be found:
+
+Response `404` (Not Found):
+
+    -
+
