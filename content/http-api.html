@@ -324,7 +324,10 @@ Path
 :	/$ADDRESS/push/gcm
 
 Body
-:	* registration_token (string)
+:	* registrationToken (string)
+	* environment (string)
+
+`environment` must be one of "android" or "ios".
 
 **Response**
 
