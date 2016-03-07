@@ -20,7 +20,7 @@ No authentication required.
 If you authenticate, you can also post `meta`
 and you will get a non-empty response (see below for details).
 
-### Post a new message to someone's inbox
+### Post a new message to someone's inbox (without attachments)
 Method
 :	POST
 
@@ -28,12 +28,11 @@ Path
 :	/$ADDRESS/messages
 
 Body ([reference](message-format.html))
-:	* keySafe (string)
-	* content (string)
-	* attachments (string, optional)
+:	* keySafe (string, base64-encoded binary)
+	* content (string, base64-encoded binary)
 
-Body (only with authentication)
-:	meta (string)
+Additional body data (only with authentication)
+:	meta (string, base64-encoded binary, optional)
 
 **Response** (without authentication)
 
@@ -42,6 +41,51 @@ Body (only with authentication)
 **Response** (with authentication)
 
 	id, lastModified, dateReceived
+
+### Post a new message to someone's inbox (with attachments)
+With attachments, the body must not contain JSON but be of type multipart/form-data.
+
+Method
+:	POST
+
+Path
+:	/$ADDRESS/messages
+
+Body ([reference](message-format.html))
+:	* keySafe (application/octet-stream)
+	* content (application/octet-stream)
+	* attachments (application/octet-stream, optional)
+
+Additional body data (only with authentication)
+:	meta (application/octet-stream, optional)
+
+Response: see above
+
+#### Example
+
+	Content-Type: multipart/form-data; boundary=--boundary
+
+	--boundary
+	Content-Disposition: form-data; name="keySafe"
+	Content-Type: application/octet-stream
+
+	...binary keySafe...
+	--boundary
+	Content-Disposition: form-data; name="content"
+	Content-Type: application/octet-stream
+
+	...binary content...
+	--boundary
+	Content-Disposition: form-data; name="meta"
+	Content-Type: application/octet-stream
+
+	...binary meta (optional, only when authenticated)...
+	--boundary
+	Content-Disposition: form-data; name="attachments"
+	Content-Type: application/octet-stream
+
+	...binary attachment data (optional)...
+	--boundary--
 
 
 ## Downloading public keys

@@ -104,7 +104,6 @@ even for multiple copies of the same message.
    (uint32), the signature and the compressed JSON
  * encrypt the result using the algorithm `keySafe.symmCipher`, the static IV =
    `"content"` and the key `keySafe.symmKey`
- * base64-encode the encrypted data
 
 ### Field "attachments"
 
@@ -126,7 +125,6 @@ If there is at least one non-empty attachment, the following format is used:
  * gzip-compress the result
  * encrypt the compressed result using the algorithm `keySafe.symmCipher`, the
    static IV = `"attachments"` and the key `keySafe.symmKey`
- * base64-encode the encrypted data
 
 ### Field "meta"
 
