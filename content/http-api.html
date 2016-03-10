@@ -21,6 +21,9 @@ If you authenticate, you can also post `meta`
 and you will get a non-empty response (see below for details).
 
 ### Post a new message to someone's inbox (without attachments)
+This uses a JSON request body just like almost all other API endpoints. If you
+want to send attachments, you need to use the multipart variant (see below).
+
 Method
 :	POST
 
@@ -42,8 +45,8 @@ Additional body data (only with authentication)
 
 	id, lastModified, dateReceived
 
-### Post a new message to someone's inbox (with attachments)
-With attachments, the body must not contain JSON but be of type multipart/form-data.
+### Post a new message to someone's inbox (with or without attachments)
+The body must not contain JSON but be of type multipart/form-data.
 
 Method
 :	POST
