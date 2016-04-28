@@ -304,6 +304,70 @@ GET https://kullo.example.com/v1/someuser%23example.com/account/info
 	    "settingsLocation": "https://accounts.example.com/QamMYWfeoEobhyuVDIPOppRHzrQPzsfi"
 	}
 
+### User profile data
+#### Get a list of profile entries
+Method
+:	GET
+
+Path
+:	/$ADDRESS/profile
+
+Query parameters
+:	* modifiedAfter (uint64, optional)
+
+**Response** ([reference](profile-data.html))
+
+	data (array)
+		key, value, lastModified
+
+The results are sorted by lastModified in ascending order.
+
+#### Get a profile entry
+Method
+:	GET
+
+Path
+:	/$ADDRESS/profile/$KEY
+
+**Response** ([reference](profile-data.html))
+
+	key, value, lastModified
+
+`key` is the unencrypted key as given in the request URL;
+`value` is the base64-encoded encrypted value corresponding to the key.
+
+#### Create a new profile entry
+Method
+:	POST
+
+Path
+:	/$ADDRESS/profile
+
+Body ([reference](profile-data.html))
+:	* key (string)
+	* value (string, base64-encoded encrypted value)
+
+**Response**
+
+	key, lastModified
+
+#### Modify a profile entry
+Method
+:	PATCH
+
+Path
+:	/$ADDRESS/profile/$KEY
+
+Query parameters
+:	* lastModified (uint64)
+
+Body ([reference](profile-data.html))
+:	* value (string, base64-encoded encrypted value)
+
+**Response**
+
+	key, lastModified
+
 
 ## Registration
 

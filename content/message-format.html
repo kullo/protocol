@@ -15,11 +15,13 @@ title: Message Format Reference
 * Numbers are always stored in network byte order (big endian). This doesn't
   apply to JSON, which is a human readable format, so that numbers are
   represented by printable characters.
+* All size limits are given in KiB or MiB, also known as
+  [kibibytes](https://en.wikipedia.org/wiki/Kibibyte) or
+  [mebibytes](https://en.wikipedia.org/wiki/Mebibyte).
 
 ## Message
 
 ### Size limits
-All size limits are given in KiB or MiB, also known as [kibibytes](https://en.wikipedia.org/wiki/Kibibyte) or [mebibytes](https://en.wikipedia.org/wiki/Mebibyte).
 
  * `keySafe`: 1 KiB
  * `content`: 64 KiB

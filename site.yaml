@@ -33,6 +33,8 @@ context:
             url: http-api.html
           - title: Message Format
             url: message-format.html
+          - title: Profile Data Format
+            url: profile-data.html
 # This defines meta data on the whole site.
 meta:
     # 'nodemeta' will tell Hyde what file to look for inside a folder from

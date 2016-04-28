@@ -1,0 +1,50 @@
+---
+extends: base.j2
+default_block: main_md
+title: Profile Data Reference
+---
+
+[TOC]
+
+## Common rules
+
+The common rules from the [message format docs](message-format.html) also apply
+to profile data.
+
+## Profile data entries
+
+ * `key`: string with up to 64 characters (see below)
+ * `value`: string, maximum length is 64 KiB
+ * `lastModified`: server-assigned numeric timestamp
+
+The key must contain only lower-case unaccented latin characters, numbers and
+underscores. It must NOT contain spaces, dashes or accented characters.
+The corresponding regex character class is `[a-z0-9_]`.
+
+### Valid keys
+
+:	* `name`: real name (string)
+	* `organization`: organization/company (string)
+	* `footer`: message footer/imprint (string)
+	* `avatar_type`: MIME type of avatar (string, see [message format docs](message-format.html))
+	* `avatar_data`: avatar data (binary, see [message format docs](message-format.html))
+	* `mk_backup_reminder`: timestamp of next MasterKey backup reminder to be shown (datetime, optional)
+
+Clients should remind the user of backing up his MasterKey if
+`mk_backup_reminder` is in the past. If the user postpones the reminder, the
+date should be set to some time in the future. If, however, the user did backup
+his key, `mk_backup_reminder` should be set to an empty string.
+
+### Encoding of values
+
+ * represent the value as binary if it has a type other than binary:
+   datetimes are serialized as an RFC3339 string, strings are encoded in their
+   UTF-8 representation
+ * encrypt value using AES-256/GCM, the `privateDataKey` and a random IV of
+   128 bit (16 bytes)
+ * concatenate the format version (uint32, fixed to 1), the IV and the encrypted
+   value
+
+When packaged in JSON, the keys are encoded as strings, while the encrypted
+values are base64-encoded and then encoded as strings.
+
