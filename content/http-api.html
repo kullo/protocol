@@ -336,30 +336,15 @@ Path
 `key` is the unencrypted key as given in the request URL;
 `value` is the base64-encoded encrypted value corresponding to the key.
 
-#### Create a new profile entry
+#### Create or modify a profile entry
 Method
-:	POST
-
-Path
-:	/$ADDRESS/profile
-
-Body ([reference](profile-data.html))
-:	* key (string)
-	* value (string, base64-encoded encrypted value)
-
-**Response**
-
-	key, lastModified
-
-#### Modify a profile entry
-Method
-:	PATCH
+:	PUT
 
 Path
 :	/$ADDRESS/profile/$KEY
 
 Query parameters
-:	* lastModified (uint64)
+:	* lastModified (uint64, 0 if the client wants to create the entry)
 
 Body ([reference](profile-data.html))
 :	* value (string, base64-encoded encrypted value)
