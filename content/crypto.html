@@ -10,7 +10,12 @@ title: Cryptography in Kullo
   (for example [ENISA](https://www.enisa.europa.eu/activities/identity-and-trust/library/deliverables/algorithms-key-sizes-and-parameters-report)
   and [ECRYPT, NIST, ANSSI, BSI, ...](http://www.keylength.com/en/compare/)).
 * Don't roll your own implementation!
-  In our own client, we use [OpenSSL](https://en.wikipedia.org/wiki/OpenSSL) for TLS and [Botan](https://en.wikipedia.org/wiki/Botan_%28programming_library%29) for everything else.
+  In our own client, we use [Botan](https://botan.randombit.net/) for everything but TLS.
+  The latter is implemented in platform-specific ways:
+  We use [Secure Channel](https://msdn.microsoft.com/en-us/library/windows/desktop/aa380123(v=vs.85).aspx) on Windows,
+  [Secure Transport](https://developer.apple.com/library/mac/documentation/Security/Reference/secureTransportRef/) on macOS and iOS,
+  [OpenSSL](https://en.wikipedia.org/wiki/OpenSSL) on Linux and
+  [javax.net.ssl](https://developer.android.com/reference/javax/net/ssl/package-summary.html) on Android.
 * Keep it simple!
   For example, we use authenticated encryption ([GCM](https://en.wikipedia.org/wiki/Galois/Counter_Mode)) instead of implementing encrypt-then-MAC or MAC-then-encrypt.
 
