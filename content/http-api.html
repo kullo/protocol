@@ -376,9 +376,14 @@ Body
 	* privateDataKey (string)
 	* keypairEncryption (object with string keys `pubkey` and `privkey`)
 	* keypairSigning (object with string keys `pubkey` and `privkey`)
+	* acceptedTerms (string, optional)
 	* challenge (object with the following keys, optional): type (string), user (string), timestamp (uint64), text (string), optional: can have more fields, depending on type
 	* challengeAuth (string, optional)
 	* challengeAnswer (string, optional)
+
+`acceptedTerms` is the URL of the Terms and Conditions that the user accepted.
+Only set this if the user actively consented to the given terms.
+If the field is not present and set to a value accepted by the server, the registration might be denied, according to server policy.
 
 When `challenge` is set, `challengeAuth` and `challengeAnswer` must be set as well.
 
