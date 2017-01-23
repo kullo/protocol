@@ -294,16 +294,23 @@ Path
 
 **Response**
 
-	settingsLocation
+	settingsLocation, planName, storageQuota, storageUsed
 
-`settingsLocation` is an (optional) URL where the user can edit server specific settings. This might be used for notification settings or billing.
+`settingsLocation` is an (optional) URL of a website where the user can edit server-specific settings. This might be used for notification settings or billing.
+
+`planName` is the (optional) user-facing name of the plan the user is on.
+
+`storageQuota` and `storageUsed` are (optional) integer values that show the amount of storage that is available on the user's plan and the amount that is used by the user's data, measured in bytes.
 
 **Example**
 
 GET https://kullo.example.com/v1/someuser%23example.com/account/info
 
 	{
-	    "settingsLocation": "https://accounts.example.com/QamMYWfeoEobhyuVDIPOppRHzrQPzsfi"
+	    "settingsLocation": "https://accounts.example.com/QamMYWfeoEobhyuVDIPOppRHzrQPzsfi",
+	    "planName": "Free",
+	    "storageQuota": 1073741824,
+	    "storageUsed": 42424242
 	}
 
 ### User profile data
