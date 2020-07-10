@@ -41,5 +41,5 @@ If you change a file, just reload the page in the browser to see the changes.
 
 ![Creative Commons License](https://i.creativecommons.org/l/by-nd/4.0/88x31.png)
 
-The Open Kullo Protocol by Kullo GmbH is licensed under a [Creative Commons Attribution-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nd/4.0/).
-
+The Open Kullo Protocol by Kullo GmbH i.L. is licensed under a
+[Creative Commons Attribution-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nd/4.0/).
